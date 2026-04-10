@@ -227,12 +227,16 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   const pw  = document.getElementById('pwInput').value;
   const btn = document.getElementById('loginBtn');
   btn.textContent = '확인 중...'; btn.disabled = true;
-  const res = await apiGet({ action:'adminCheck', pw });
-  if(res.success){
-    document.getElementById('loginWrap').style.display = 'none';
-    document.getElementById('adminWrap').style.display = '';
-    loadAll();
-  } else {
+  try {
+    const res = await apiPost({ action:'adminCheck', pw });
+    if(res.success){
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('adminWrap').style.display = '';
+      loadAll();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  } catch(e) {
     document.getElementById('loginErr').style.display = 'block';
   }
   btn.textContent = '로그인'; btn.disabled = false;
