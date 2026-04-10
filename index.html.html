@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>그땐 그게 유행이었지</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Serif+KR:wght@300;400&family=Noto+Sans+KR:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --wall: #EEE4D4;
+  --paper: #FDF6E8;
+  --ink: #362818;
+  --ink-light: #8C7560;
+  --accent: #B8692A;
+  --border: rgba(150,105,50,0.2);
+  --tape: rgba(210,160,55,0.58);
+  --shadow: rgba(110,60,15,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--wall); font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden; }
+
+/* ── CORK BOARD BACKGROUND ── */
+.wall-bg {
+  position: fixed; inset: 0; z-index: 0;
+
+  /* 코르크 기본 베이스 */
+  background-color: #C8975A;
+
+  /* 코르크 셀 패턴 — 여러 레이어 겹쳐서 자연스러운 결 표현 */
+  background-image:
+    /* 상단 빛 반사 */
+    radial-gradient(ellipse at 18% 12%, rgba(255,235,180,0.32) 0%, transparent 45%),
+    radial-gradient(ellipse at 82% 88%, rgba(140,80,20,0.18) 0%, transparent 40%),
+
+    /* 코르크 큰 셀 결 */
+    repeating-radial-gradient(
+      ellipse at 30% 40%,
+      transparent 0px, transparent 3px,
+      rgba(160,90,20,0.07) 3px, rgba(160,90,20,0.07) 4px
+    ),
+    repeating-radial-gradient(
+      ellipse at 70% 60%,
+      transparent 0px, transparent 5px,
+      rgba(100,55,10,0.06) 5px, rgba(100,55,10,0.06) 6px
+    ),
+    repeating-radial-gradient(
+      ellipse at 50% 20%,
+      transparent 0px, transparent 4px,
+      rgba(180,110,30,0.05) 4px, rgba(180,110,30,0.05) 5px
+    ),
+
+    /* 수평 나뭇결 라인 */
+    repeating-linear-gradient(
+      178deg,
+      transparent 0px, transparent 6px,
+      rgba(150,85,15,0.06) 6px, rgba(150,85,15,0.06) 7px,
+      transparent 7px, transparent 14px,
+      rgba(120,65,10,0.04) 14px, rgba(120,65,10,0.04) 15px
+    ),
+    /* 미세 사선 결 */
+    repeating-linear-gradient(
+      92deg,
+      transparent 0px, transparent 10px,
+      rgba(180,105,25,0.04) 10px, rgba(180,105,25,0.04) 11px
+    ),
+    /* 베이스 그라데이션 */
+    linear-gradient(
+      160deg,
+      #C9935A 0%,
+      #BE8A50 25%,
+      #C49055 50%,
+      #B88248 75%,
+      #C0925A 100%
+    );
+}
+
+/* 코르크 위 노이즈 grain */
+.wall-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  pointer-events: none;
+}
+
+/* ── HEADER ── */
+.header {
+  position: relative; z-index: 10;
+  text-align: center;
+  padding: 48px 20px 16px;
+}
+.header-eyebrow { font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: rgba(255,240,210,0.75); margin-bottom: 9px; }
+.header-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400; font-size: 38px; color: #FDF6E8; line-height: 1; text-shadow: 0 2px 12px rgba(80,40,5,0.35); }
+.header-sub { font-size: 12px; color: rgba(255,235,195,0.65); margin-top: 9px; font-weight: 300; letter-spacing: .04em; }
+.divider { display: flex; align-items: center; gap: 12px; max-width: 260px; margin: 18px auto 0; }
+.dl { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,220,150,.3), transparent); }
+.dd { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,220,150,.35); }
+
+/* ── TODAY'S PICKS ── */
+.picks-section {
+  position: relative; z-index: 10;
+  padding: 32px 20px 8px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.picks-label {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.picks-label-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 17px; font-weight: 400;
+  color: #FDF6E8; letter-spacing: .03em;
+  text-shadow: 0 1px 6px rgba(80,40,5,.3);
+}
+.picks-date {
+  font-size: 10px; color: rgba(255,235,195,.8); letter-spacing: .08em;
+  background: rgba(80,40,5,.22);
+  padding: 3px 9px; border-radius: 20px;
+  border: 0.5px solid rgba(255,210,130,.25);
+}
+.picks-row {
+  display: flex; gap: 16px; justify-content: center; align-items: flex-end;
+  padding-bottom: 8px;
+}
+
+/* featured polaroid — slightly bigger */
+.pick-card {
+  position: relative;
+  cursor: pointer;
+  transition: transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s;
+  animation: floatIn .5s cubic-bezier(.2,.8,.3,1) both;
+}
+.pick-card:hover {
+  z-index: 50;
+  box-shadow: 0 22px 52px rgba(110,60,15,.26), 0 7px 18px rgba(110,60,15,.16) !important;
+  transform: scale(1.05) rotate(0deg) !important;
+}
+.pick-frame {
+  background: var(--paper);
+  padding: 9px 9px 32px;
+  box-shadow: 0 6px 22px rgba(110,60,15,.2), 0 2px 7px rgba(110,60,15,.13), inset 0 0 0 .5px rgba(190,155,100,.4);
+}
+.pick-photo {
+  width: 150px; height: 150px;
+  overflow: hidden; position: relative;
+  background: #D8D0C4;
+  display: flex; align-items: center; justify-content: center;
+}
+.pick-photo img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.03) saturate(.85) sepia(.14) brightness(.98); }
+.pick-photo::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 22px rgba(40,20,5,.26); pointer-events: none; }
+.pick-caption { padding: 9px 3px 0; }
+.pick-story { font-family: 'Nanum Myeongjo', serif; font-size: 12.5px; color: var(--ink); line-height: 1.55; text-align: center; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pick-name { font-size: 9px; color: var(--ink-light); text-align: center; margin-top: 3px; letter-spacing: .05em; }
+.pick-footer {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(150,105,50,.1);
+}
+.pick-stat {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px; color: var(--ink-light); cursor: pointer; transition: color .15s;
+}
+.pick-stat:hover { color: var(--accent); }
+.pick-stat.liked { color: var(--accent); font-weight: 500; }
+.pick-stat svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+.tape-pick {
+  position: absolute; top: -8px; left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 40px; height: 16px;
+  background: var(--tape); border-radius: 1px; z-index: 2;
+}
+.tape-pick::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(255,255,255,.18) 3px,rgba(255,255,255,.18) 4px); border-radius: 1px; }
+.pin-pick {
+  position: absolute; top: -7px; left: 50%;
+  transform: translateX(-50%);
+  width: 10px; height: 10px; border-radius: 50%; z-index: 3;
+  box-shadow: 0 2px 5px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.4);
+}
+
+.like-badge {
+  position: absolute; top: 5px; right: 5px; z-index: 10;
+  display: flex; align-items: center; gap: 3px;
+  background: rgba(255,252,245,.88);
+  border-radius: 20px; padding: 2px 6px 2px 4px;
+  font-size: 10px; color: var(--ink-light);
+  cursor: pointer;
+  border: .5px solid rgba(160,120,60,.16);
+  transition: transform .15s;
+  backdrop-filter: blur(4px);
+}
+.like-badge:hover { transform: scale(1.1); }
+.like-badge.liked { color: #C0392B; }
+
+/* picks divider */
+.picks-divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,210,130,.2), transparent);
+  margin: 28px 0 0;
+  position: relative; z-index: 10;
+}
+
+/* ── WALL CONTROLS ── */
+.wall-controls {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 4px;
+  max-width: 680px; margin: 0 auto;
+}
+.wall-controls-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 15px; font-weight: 400;
+  color: rgba(255,235,195,.75);
+}
+.shuffle-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(80,40,5,.2);
+  border: 1px solid rgba(255,210,130,.3);
+  border-radius: 20px;
+  padding: 6px 16px;
+  color: rgba(255,230,180,.75);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; font-weight: 300;
+  cursor: pointer; transition: all .22s;
+  letter-spacing: .04em;
+  backdrop-filter: blur(4px);
+}
+.shuffle-btn:hover { border-color: rgba(255,220,150,.55); color: rgba(255,245,210,.95); background: rgba(80,40,5,.35); }
+
+/* ── PHOTO WALL ── */
+.photo-wall {
+  position: relative; z-index: 5;
+  padding: 16px 10px 20px;
+  columns: 3;
+  column-gap: 0;
+  max-width: 720px; margin: 0 auto;
+}
+@media (max-width: 500px) { .photo-wall { columns: 2; } }
+.polaroid {
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 16px);
+  margin: 6px 8px;
+  cursor: pointer;
+  break-inside: avoid;
+  transition: transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s;
+  animation: floatIn .5s cubic-bezier(.2,.8,.3,1) both;
+}
+.polaroid:hover {
+  z-index: 100;
+  box-shadow: 0 20px 48px rgba(110,60,15,.24), 0 6px 16px rgba(110,60,15,.14) !important;
+  transform: scale(1.05) rotate(0deg) !important;
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(16px) scale(.94) rotate(var(--r,0deg)); }
+  to   { opacity: 1; transform: translateY(0) scale(1) rotate(var(--r,0deg)); }
+}
+.polaroid-frame {
+  background: var(--paper);
+  padding: 8px 8px 14px;
+  box-shadow: 0 5px 16px rgba(110,60,15,.16), 0 2px 5px rgba(110,60,15,.1), inset 0 0 0 .5px rgba(190,155,100,.36);
+}
+.tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-1deg); width: 38px; height: 15px; background: var(--tape); border-radius: 1px; z-index: 2; }
+.tape::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(255,255,255,.18) 3px,rgba(255,255,255,.18) 4px); border-radius: 1px; }
+.pin { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px; border-radius: 50%; z-index: 3; box-shadow: 0 2px 5px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.4); }
+.p-photo { width: 100%; aspect-ratio: 1; overflow: hidden; position: relative; background: #D8D0C4; display: flex; align-items: center; justify-content: center; }
+.p-photo img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.03) saturate(.85) sepia(.14) brightness(.98); }
+.p-photo::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 20px rgba(80,40,5,.22); pointer-events: none; }
+.p-caption { padding: 7px 3px 0; }
+.p-story { font-family: 'Nanum Myeongjo', serif; font-size: 11.5px; color: var(--ink); line-height: 1.65; text-align: center; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.p-name { font-size: 9px; color: var(--ink-light); text-align: center; margin-top: 3px; letter-spacing: .04em; font-family: 'Noto Sans KR', sans-serif; }
+.p-footer {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(150,105,50,.1);
+}
+.p-stat {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px; color: var(--ink-light);
+  cursor: pointer;
+  transition: color .15s;
+}
+.p-stat:hover { color: var(--accent); }
+.p-stat.liked { color: var(--accent); font-weight: 500; }
+.p-stat svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+.p-like { position: absolute; top: 5px; right: 5px; z-index: 10; display: flex; align-items: center; gap: 3px; background: rgba(255,252,245,.85); border-radius: 20px; padding: 2px 6px 2px 4px; font-size: 10px; color: var(--ink-light); cursor: pointer; border: .5px solid rgba(160,120,60,.15); transition: transform .15s; backdrop-filter: blur(4px); }
+.p-like:hover { transform: scale(1.1); }
+.p-like.liked { color: #C0392B; }
+
+/* ── DRAWER TRIGGER ── */
+.drawer-wrap { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; padding: 8px 0 80px; opacity: .65; transition: opacity .2s; }
+.drawer-wrap:hover { opacity: .9; }
+.drawer-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; padding: 16px 36px 18px; border: none; background: transparent; transition: transform .2s; }
+.drawer-btn:hover { transform: translateY(-3px); }
+.di { width: 72px; height: 52px; position: relative; }
+.di-cap { position: absolute; top: 0; left: -2px; right: -2px; height: 7px; background: linear-gradient(180deg,#D49A50,#B07830); border-radius: 2px 2px 0 0; border: .5px solid rgba(80,40,10,.2); }
+.di-body { width: 72px; height: 44px; background: repeating-linear-gradient(91deg,rgba(255,200,80,.07) 0px,rgba(255,200,80,.07) 1px,transparent 1px,transparent 8px), linear-gradient(160deg,#D49A50,#A87030); border-radius: 2px; border: 1px solid rgba(80,40,10,.25); position: absolute; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 5px 8px; }
+.di-d { height: 10px; background: rgba(160,90,20,.5); border-radius: 1px; border: .5px solid rgba(60,30,5,.2); display: flex; align-items: center; justify-content: center; }
+.di-k { width: 7px; height: 4px; border-radius: 2px; background: radial-gradient(circle at 35% 30%,#D4A060,#8A5020); }
+.drawer-label { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 400; color: rgba(255,235,195,.8); letter-spacing: .04em; }
+
+/* ── FLOATING BUTTON ── */
+.fab {
+  position: fixed;
+  bottom: 28px; right: 24px;
+  z-index: 150;
+  display: flex; align-items: center; gap: 9px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none; border-radius: 50px;
+  padding: 13px 22px 13px 18px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; font-weight: 400;
+  letter-spacing: .04em;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(80,40,8,.32), 0 2px 8px rgba(80,40,8,.18);
+  transition: transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .22s, background .18s;
+  overflow: hidden;
+}
+.fab:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(80,40,8,.38), 0 4px 12px rgba(80,40,8,.22);
+  background: #5A3E24;
+}
+.fab:active { transform: scale(.97); }
+.fab-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px; line-height: 1;
+}
+.fab-pulse {
+  position: absolute; inset: 0; border-radius: 50px;
+  animation: fabPulse 2.2s ease-out 0.8s 2;
+  pointer-events: none;
+}
+@keyframes fabPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(54,40,24,.4); }
+  70%  { box-shadow: 0 0 0 14px rgba(54,40,24,0); }
+  100% { box-shadow: 0 0 0 0 rgba(54,40,24,0); }
+}
+
+/* ── DETAIL MODAL ── */
+.backdrop { position: fixed; inset: 0; background: rgba(40,25,10,.52); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .28s; backdrop-filter: blur(3px); padding: 20px; }
+.backdrop.open { opacity: 1; pointer-events: all; }
+
+.detail-modal {
+  background: var(--paper);
+  border-radius: 14px;
+  width: 100%; max-width: 400px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(80,35,5,.3);
+  transform: scale(.94) translateY(12px);
+  transition: transform .32s cubic-bezier(.2,.8,.3,1);
+  position: relative;
+}
+.backdrop.open .detail-modal { transform: scale(1) translateY(0); }
+
+.detail-photo { width: 100%; overflow: hidden; background: #D8D0C4; display: flex; align-items: center; justify-content: center; border-radius: 14px 14px 0 0; }
+.detail-photo img { width: 100%; height: auto; object-fit: contain; filter: contrast(1.04) saturate(.88) sepia(.08); display: block; }
+.detail-photo-ph { width: 100%; height: 260px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; color: rgba(255,255,255,.85); }
+
+.detail-body { padding: 20px 22px 24px; }
+.detail-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.detail-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: rgba(255,255,255,.9); flex-shrink: 0; }
+.detail-who { flex: 1; }
+.detail-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+.detail-org { font-size: 10px; color: var(--ink-light); margin-top: 1px; }
+.detail-like-btn { display: flex; align-items: center; gap: 4px; background: transparent; border: 1px solid rgba(160,120,60,.2); border-radius: 20px; padding: 4px 14px; font-size: 12px; color: var(--ink-light); cursor: pointer; transition: all .15s; font-family: 'Noto Sans KR', sans-serif; letter-spacing: .03em; }
+.detail-like-btn:hover { border-color: var(--accent); color: var(--accent); }
+.detail-like-btn.liked { color: var(--accent); border-color: rgba(184,105,42,.4); font-weight: 500; }
+
+.detail-story { font-family: 'Nanum Myeongjo', serif; font-size: 16px; color: var(--ink); line-height: 1.7; margin-bottom: 18px; }
+
+/* comments */
+.comments-label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-light); opacity: .6; margin-bottom: 12px; }
+.comment-item { display: flex; gap: 9px; padding: 10px 0; border-top: 1px solid rgba(160,120,60,.1); }
+.c-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: rgba(255,255,255,.88); flex-shrink: 0; margin-top: 1px; }
+.c-body { flex: 1; }
+.c-header { display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+.c-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.c-org { font-size: 10px; color: var(--ink-light); }
+.c-time { font-size: 10px; color: var(--ink-light); opacity: .6; margin-left: auto; }
+.c-text { font-size: 13px; color: var(--ink); line-height: 1.6; }
+
+/* comment form */
+.comment-form { margin-top: 14px; border-top: 1px solid rgba(160,120,60,.12); padding-top: 14px; }
+.cf-row { display: flex; gap: 7px; margin-bottom: 8px; }
+.cf-input { flex: 1; padding: 8px 10px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; border: 1px solid rgba(150,105,50,.45); border-radius: 7px; background: #FDF6E8; color: var(--ink); outline: none; -webkit-appearance: none; transition: border-color .18s; }
+.cf-input:focus { border-color: rgba(150,100,40,.7); box-shadow: 0 0 0 2px rgba(180,120,50,.1); }
+.cf-input::placeholder { color: rgba(100,80,55,.5); }
+.cf-textarea { width: 100%; padding: 9px 10px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; border: 1px solid rgba(150,105,50,.45); border-radius: 7px; background: #FDF6E8; color: var(--ink); outline: none; resize: none; min-height: 60px; line-height: 1.6; margin-bottom: 8px; transition: border-color .18s; }
+.cf-textarea:focus { border-color: rgba(160,110,50,.45); }
+.cf-textarea::placeholder { color: rgba(100,80,55,.5); }
+.cf-submit { width: 100%; padding: 10px; background: var(--ink); color: var(--paper); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; border: none; border-radius: 8px; cursor: pointer; letter-spacing: .04em; transition: background .2s; }
+.cf-submit:hover { background: #5A4030; }
+
+.modal-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,252,245,.88); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,.14); transition: background .15s; backdrop-filter: blur(4px); }
+.modal-close:hover { background: rgba(255,252,245,1); }
+.modal-close svg { width: 14px; height: 14px; stroke: var(--ink); stroke-width: 2; }
+
+/* ── UPLOAD MODAL ── */
+.upload-backdrop { position: fixed; inset: 0; background: rgba(40,25,10,.58); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .28s; backdrop-filter: blur(3px); padding: 20px; }
+.upload-backdrop.open { opacity: 1; pointer-events: all; }
+.upload-modal { width: 100%; max-width: 440px; max-height: 88vh; overflow-y: auto; background: var(--paper); border-radius: 16px; padding: 28px 26px 36px; transform: scale(.93) translateY(10px); transition: transform .34s cubic-bezier(.2,.8,.3,1), opacity .28s; box-shadow: 0 20px 60px rgba(40,20,5,.35), 0 4px 16px rgba(40,20,5,.2); }
+.upload-backdrop.open .upload-modal { transform: scale(1) translateY(0); }
+.u-handle { width: 36px; height: 4px; background: rgba(100,75,45,.18); border-radius: 2px; margin: 0 auto 20px; }
+.u-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 21px; font-weight: 300; color: var(--ink); margin-bottom: 18px; text-align: center; }
+.u-zone { border: 1.5px dashed rgba(160,110,50,.28); border-radius: 10px; padding: 24px 16px; text-align: center; cursor: pointer; margin-bottom: 14px; background: rgba(240,225,200,.28); transition: all .2s; position: relative; overflow: hidden; }
+.u-zone:hover { border-color: rgba(160,110,50,.55); background: rgba(240,225,200,.45); }
+.u-zone.has-img { padding: 0; }
+.u-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.u-zone img.preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; display: block; filter: sepia(.06) contrast(1.04); }
+.u-hint { font-size: 12px; color: var(--ink-light); line-height: 1.6; }
+.u-row { display: flex; gap: 7px; margin-bottom: 9px; }
+.u-field { flex: 1; padding: 9px 11px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; border: 1px solid rgba(150,105,50,.45); border-radius: 8px; background: #FDF6E8; color: var(--ink); outline: none; -webkit-appearance: none; transition: border-color .18s; }
+.u-field:focus { border-color: rgba(150,100,40,.7); box-shadow: 0 0 0 2px rgba(180,120,50,.1); }
+.u-field::placeholder { color: rgba(100,75,45,.5); }
+.u-story { width: 100%; padding: 9px 11px; font-size: 14px; font-family: 'Nanum Myeongjo', serif; border: 1px solid rgba(150,105,50,.45); border-radius: 8px; background: #FDF6E8; color: var(--ink); outline: none; resize: none; min-height: 66px; line-height: 1.65; margin-bottom: 4px; transition: border-color .18s; }
+.u-story:focus { border-color: rgba(150,100,40,.45); }
+.u-story::placeholder { color: rgba(100,75,45,.38);  }
+.u-count { font-size: 10px; color: var(--ink-light); text-align: right; margin-bottom: 12px; opacity: .6; }
+.u-submit { width: 100%; padding: 12px; background: var(--ink); color: var(--paper); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; border: none; border-radius: 10px; cursor: pointer; letter-spacing: .04em; transition: background .2s; }
+.u-submit:hover { background: #5A4030; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(14px); background: var(--ink); color: var(--paper); padding: 9px 20px; border-radius: 24px; font-size: 13px; font-weight: 300; letter-spacing: .04em; opacity: 0; transition: all .3s; z-index: 500; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.placeholder-icon { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; font-family: 'Noto Sans KR', sans-serif; color: rgba(255,255,255,.85); }
+</style>
+</head>
+<body>
+<div class="wall-bg"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-eyebrow">삼천리그룹 임직원 플랫폼</div>
+  <div class="header-title">그땐 그게 유행이었지</div>
+  <div class="header-sub">당신의 추억 속 그 물건, 지금 꺼내보세요</div>
+  <div class="divider"><div class="dl"></div><div class="dd"></div><div class="dl"></div></div>
+</div>
+
+<!-- TODAY'S PICKS -->
+<div class="picks-section">
+  <div class="picks-label">
+    <span class="picks-label-text">그 시절 유행했던</span>
+    <span class="picks-date" id="picksDate"></span>
+  </div>
+  <div class="picks-row" id="picksRow"></div>
+</div>
+
+<div class="picks-divider"></div>
+
+<!-- WALL CONTROLS -->
+<div class="wall-controls">
+  <span class="wall-controls-label" id="wallCountLabel"></span>
+  <button class="shuffle-btn" id="shuffleBtn">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6"/>
+    </svg>
+    섞기
+  </button>
+</div>
+
+<!-- PHOTO WALL -->
+<div class="photo-wall" id="photoWall"></div>
+
+<!-- DRAWER TRIGGER -->
+<div class="drawer-wrap">
+  <button class="drawer-btn" id="openUpload">
+    <div class="di">
+      <div class="di-cap"></div>
+      <div class="di-body">
+        <div class="di-d"><div class="di-k"></div></div>
+        <div class="di-d"><div class="di-k"></div></div>
+      </div>
+    </div>
+    <span class="drawer-label">내 유행 꺼내기</span>
+  </button>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="backdrop" id="detailBackdrop">
+  <div class="detail-modal" id="detailModal">
+    <button class="modal-close" id="detailClose">
+      <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="detail-photo" id="detailPhoto"></div>
+    <div class="detail-body">
+      <div class="detail-meta" id="detailMeta"></div>
+      <div class="detail-story" id="detailStory"></div>
+      <div class="comments-label">댓글</div>
+      <div id="commentsList"></div>
+      <div class="comment-form">
+        <div class="cf-row">
+          <input class="cf-input" id="cf-name" placeholder="이름" />
+          <input class="cf-input" id="cf-company" placeholder="소속회사" />
+        </div>
+        <div class="cf-row">
+          <input class="cf-input" id="cf-team" placeholder="팀명" />
+        </div>
+        <textarea class="cf-textarea" id="cf-text" placeholder="나도 알아요, 한마디 남겨보세요..." maxlength="100"></textarea>
+        <button class="cf-submit" id="cf-submit">댓글 달기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING BUTTON -->
+<button class="fab" id="fabBtn">
+  <div class="fab-pulse"></div>
+  <div class="fab-icon">📷</div>
+  내 유행 꺼내기
+</button>
+
+<!-- UPLOAD MODAL -->
+<div class="upload-backdrop" id="uploadBackdrop">
+  <div class="upload-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div class="u-title" style="margin-bottom:0;">그때 당신의 유행은?</div>
+      <button onclick="document.getElementById('uploadBackdrop').classList.remove('open')" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--ink-light);font-size:18px;line-height:1;opacity:.6;">✕</button>
+    </div>
+    <div class="u-zone" id="uZone">
+      <input type="file" id="uFile" accept="image/*">
+      <div id="uPlaceholder">
+        <svg style="margin:0 auto 8px;display:block;opacity:.35;" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(120,85,45,1)" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+        </svg>
+        <div class="u-hint">사진을 클릭하거나 끌어다 놓으세요</div>
+      </div>
+    </div>
+    <div class="u-row">
+      <input class="u-field" id="u-name" placeholder="이름" />
+      <input class="u-field" id="u-company" placeholder="소속회사" />
+    </div>
+    <div class="u-row">
+      <input class="u-field" id="u-team" placeholder="팀명" />
+    </div>
+    <textarea class="u-story" id="u-story" placeholder="그때 왜 그게 그렇게 좋았는지 한마디..." maxlength="80" oninput="document.getElementById('uCount').textContent=this.value.length"></textarea>
+    <div class="u-count"><span id="uCount">0</span> / 80</div>
+    <button class="u-submit" id="uSubmit">벽에 붙이기</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ROTS  = [-4.5,2.8,-1.8,5.2,-3.2,1.5,-5.8,3.6,-2.4,4.1,-3.8,2.2,-1.2,4.8,-2.9,1.8];
+const TAPES = [true,false,true,true,false,true,false,true,true,false,true,false,true,false,true,true];
+const PINS  = ['#C0392B','#2471A3','#1E8449','#D4AC0D','#7D3C98','#CA6F1E'];
+const BGS   = [
+  'linear-gradient(135deg,#D8C8A8,#C4B090)',
+  'linear-gradient(135deg,#C0C8C8,#A8B8B8)',
+  'linear-gradient(135deg,#C4CCA8,#B0BC90)',
+  'linear-gradient(135deg,#D0C0A8,#BCA890)',
+  'linear-gradient(135deg,#C8C4B4,#B4B0A0)',
+  'linear-gradient(135deg,#CCC0B8,#B8ACA4)',
+  'linear-gradient(135deg,#D0C4A0,#BCB088)',
+  'linear-gradient(135deg,#C4BCAC,#B0A898)',
+  'linear-gradient(135deg,#CCB4A8,#B8A094)',
+  'linear-gradient(135deg,#BCC8B4,#A8B4A0)',
+];
+const AV_COLS = ['#9E7248','#527A8A','#528A62','#9A7E38','#785290','#9A5C2E','#3A7878','#825270','#5A8248','#6A5E98'];
+
+const SAMPLE = [
+  {id:1,name:'김민준',company:'삼천리',team:'홍보팀',
+   story:'90년대엔 이 삐삐 없으면 친구들이랑 연락도 못 했어요. 숫자 입력하고 공중전화 찾아 뛰어다니던 그 시절.',
+   likes:38,liked:false,img:'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&h=400&fit=crop&sepia=30',bg:0,
+   comments:[
+     {name:'이수연',company:'삼천리ES',team:'영업팀',text:'저도 삐삐 있었어요! 01410 암호 아직도 기억나요 ㅋㅋ',time:'1시간 전'},
+     {name:'박지훈',company:'SL&C',team:'마케팅팀',text:'공중전화 10원짜리 챙겨다니던 거 진짜 옛날 얘기네요.',time:'40분 전'}
+   ],ts:Date.now()-7200000},
+  {id:2,name:'이서현',company:'삼천리EV',team:'기획팀',
+   story:'에어맥스 신고 등교하면 교실에서 제일 인기 많았던 시절. 이거 사려고 용돈 석 달 모았어요.',
+   likes:61,liked:true,img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',bg:1,
+   comments:[
+     {name:'최민호',company:'삼천리',team:'IT팀',text:'저도 에어맥스 갖고 싶어서 부모님께 졸랐던 기억이... ㅎㅎ',time:'4시간 전'},
+     {name:'정우진',company:'S-Power',team:'기술팀',text:'그때 운동화가 교실 권력이었죠 진짜로.',time:'3시간 전'}
+   ],ts:Date.now()-18000000},
+  {id:3,name:'박성호',company:'SL&C',team:'F&B운영팀',
+   story:'다이소 생기기 전엔 이 문구점 샤프가 전부였어요. 똑딱이 샤프 심 색깔로 취향 티 냈던 중학교 시절.',
+   likes:44,liked:false,img:'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=400&fit=crop',bg:2,
+   comments:[
+     {name:'한지민',company:'삼천리',team:'재무팀',text:'연두색 샤프심 쓰면 뭔가 있어 보였죠 ㅋㅋㅋ',time:'어제'}
+   ],ts:Date.now()-86400000},
+  {id:4,name:'최유나',company:'삼천리ES',team:'고객서비스팀',
+   story:'싸이월드 미니홈피 꾸미려고 도토리 사달라고 얼마나 졸랐는지. BGM 선곡이 그 사람 감성 전부였어요.',
+   likes:92,liked:false,img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=400&fit=crop',bg:3,
+   comments:[
+     {name:'이서현',company:'삼천리EV',team:'기획팀',text:'일촌평 쓰고 두근거리던 거 생각나요 😂',time:'어제'},
+     {name:'오현석',company:'삼천리',team:'총무팀',text:'BGM으로 고백하던 시대... 진짜 명작이었다.',time:'어제'}
+   ],ts:Date.now()-172800000},
+  {id:5,name:'정우진',company:'S-Power',team:'기술팀',
+   story:'카세트 워크맨 들고 버스 타던 시절이요. 테이프 늘어지면 연필로 감아 되돌리던 것도 다 추억이에요.',
+   likes:55,liked:false,img:'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=400&fit=crop',bg:4,
+   comments:[
+     {name:'김민준',company:'삼천리',team:'홍보팀',text:'연필로 감던 거 완전 공감요 ㅋㅋ 그게 당연한 줄 알았어요.',time:'2일 전'}
+   ],ts:Date.now()-259200000},
+  {id:6,name:'한지민',company:'삼천리',team:'재무팀',
+   story:'불량식품 코너에서 이 쫀드기 안 먹어본 사람 없잖아요. 교문 앞 문방구 기억하는 분 있으면 공감!',
+   likes:114,liked:true,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',bg:5,
+   comments:[
+     {name:'최유나',company:'삼천리ES',team:'고객서비스팀',text:'쫀드기에 파란 가루 찍어 먹던 거... 그게 왜 그렇게 맛있었는지 ㅋㅋ',time:'3일 전'},
+     {name:'박성호',company:'SL&C',team:'F&B운영팀',text:'50원이면 한참 먹었던 시절이죠.',time:'3일 전'},
+     {name:'이서현',company:'삼천리EV',team:'기획팀',text:'교문 앞 문방구 냄새가 아직도 기억나요.',time:'2일 전'}
+   ],ts:Date.now()-345600000},
+  {id:7,name:'오현석',company:'삼천리',team:'총무팀',
+   story:'빨간 표지 영어 단어장. 수능 직전까지 버스에서 이것만 봤어요. 귀퉁이가 다 닳았는데 아직도 버리질 못하겠어요.',
+   likes:78,liked:false,img:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=400&fit=crop',bg:6,
+   comments:[
+     {name:'한지민',company:'삼천리',team:'재무팀',text:'단어장 귀퉁이 까매지도록 들고 다닌 거 완전 공감이에요.',time:'4일 전'},
+     {name:'정우진',company:'S-Power',team:'기술팀',text:'저는 파란 표지였는데... 다들 단어장 하나씩은 있었죠.',time:'3일 전'}
+   ],ts:Date.now()-432000000},
+];
+
+let posts   = JSON.parse(localStorage.getItem('mem_v3') || 'null') || SAMPLE;
+let nextId  = Math.max(...posts.map(p=>p.id)) + 1;
+let wallPosts = []; // currently shown on wall
+let activeId  = null;
+
+function save(){ try{ localStorage.setItem('mem_v3', JSON.stringify(posts)); }catch(e){} }
+function initials(n){ return n || '?'; }
+function avCol(idx){ return AV_COLS[idx % AV_COLS.length]; }
+
+function timeAgo(ts){
+  const d = Date.now() - ts;
+  if(d < 60000)   return '방금 전';
+  if(d < 3600000) return Math.floor(d/60000)+'분 전';
+  if(d < 86400000)return Math.floor(d/3600000)+'시간 전';
+  return Math.floor(d/86400000)+'일 전';
+}
+
+/* ── TODAY'S PICKS ── */
+function renderPicks(){
+  document.getElementById('picksDate').textContent = '✦ 랜덤 추천';
+
+  const shuffled = [...posts].sort(() => Math.random() - .5);
+  const picks = shuffled.slice(0,3);
+
+  const rots = [-3.5, 1.8, -2.2];
+  const row  = document.getElementById('picksRow');
+  row.innerHTML = '';
+  picks.forEach((p, i) => {
+    const useTape = [true,false,true][i];
+    const pinCol  = PINS[p.id % PINS.length];
+    const el = document.createElement('div');
+    el.className = 'pick-card';
+    el.style.setProperty('--r', rots[i]+'deg');
+    el.style.transform = `rotate(${rots[i]}deg)`;
+    el.style.animationDelay = (i*0.1)+'s';
+    el.innerHTML = `
+      ${useTape
+        ? `<div class="tape-pick" style="transform:translateX(-50%) rotate(${(Math.random()-.5)*4}deg);"></div>`
+        : `<div class="pin-pick" style="background:radial-gradient(circle at 35% 30%,${pinCol}dd,${pinCol}77);"></div>`}
+      <div class="pick-frame">
+        <div class="pick-photo">
+          ${p.img
+            ? `<img src="${p.img}" alt="">`
+            : `<div class="placeholder-icon" style="background:${BGS[p.bg%BGS.length]}; width:100%; height:100%;">
+                <span style="background:${avCol(p.id)};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;">${initials(p.name)}</span>
+               </div>`}
+        </div>
+        <div class="pick-caption">
+          <div class="pick-story">${p.story}</div>
+          <div class="pick-name">${p.name} · ${p.company}</div>
+          <div class="pick-footer">
+            <div class="pick-stat ${p.liked?'liked':''}" id="plk-${p.id}">
+              공감 ${p.likes}
+            </div>
+            <div class="pick-stat" id="pcm-${p.id}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              ${p.comments.length}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    el.addEventListener('click', e => {
+      if(e.target.closest(`#plk-${p.id}`)) return;
+      if(e.target.closest(`#pcm-${p.id}`)) return;
+      openDetail(p.id);
+    });
+    el.querySelector(`#plk-${p.id}`).addEventListener('click', e => {
+      e.stopPropagation(); toggleLike(p.id);
+    });
+    el.querySelector(`#pcm-${p.id}`).addEventListener('click', e => {
+      e.stopPropagation(); openDetail(p.id);
+    });
+    row.appendChild(el);
+  });
+}
+
+/* ── WALL ── */
+function getWallPosts(){
+  const shuffled = [...posts].sort(() => Math.random() - .5);
+  return shuffled.slice(0, Math.min(posts.length, 12));
+}
+
+function renderWall(items){
+  wallPosts = items;
+  document.getElementById('wallCountLabel').textContent = `전체 ${posts.length}개의 추억`;
+  const wall = document.getElementById('photoWall');
+  wall.innerHTML = '';
+  items.forEach((p, i) => wall.appendChild(makePolaroid(p, i)));
+}
+
+function makePolaroid(p, idx){
+  const rot = ROTS[idx % ROTS.length];
+  const useTape = TAPES[idx % TAPES.length];
+  const pinCol = PINS[p.id % PINS.length];
+
+  const el = document.createElement('div');
+  el.className = 'polaroid';
+  el.dataset.id = p.id;
+  el.style.setProperty('--r', rot+'deg');
+  el.style.transform = `rotate(${rot}deg)`;
+  el.style.animationDelay = (idx * .06)+'s';
+
+  el.innerHTML = `
+    ${useTape
+      ? `<div class="tape" style="transform:translateX(-50%) rotate(${(Math.random()-.5)*4}deg);"></div>`
+      : `<div class="pin" style="background:radial-gradient(circle at 35% 30%,${pinCol}dd,${pinCol}77);"></div>`}
+    <div class="polaroid-frame">
+      <div class="p-photo">
+        ${p.img
+          ? `<img src="${p.img}" alt="">`
+          : `<div class="placeholder-icon" style="background:${BGS[p.bg%BGS.length]};width:100%;height:100%;">
+              <span style="background:${avCol(p.id)};width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;">${initials(p.name)}</span>
+             </div>`}
+      </div>
+      <div class="p-caption">
+        <div class="p-story">${p.story}</div>
+        <div class="p-name">${p.name} · ${p.company}${p.team?' · '+p.team:''}</div>
+        <div class="p-footer">
+          <div class="p-stat ${p.liked?'liked':''}" id="like-${p.id}">
+            공감 ${p.likes}
+          </div>
+          <div class="p-stat" id="cmt-${p.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            ${p.comments.length}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  el.addEventListener('click', e => {
+    if(e.target.closest(`#like-${p.id}`)) return;
+    if(e.target.closest(`#cmt-${p.id}`)) return;
+    openDetail(p.id);
+  });
+  el.querySelector(`#like-${p.id}`).addEventListener('click', e => {
+    e.stopPropagation(); toggleLike(p.id);
+  });
+  el.querySelector(`#cmt-${p.id}`).addEventListener('click', e => {
+    e.stopPropagation(); openDetail(p.id);
+  });
+  return el;
+}
+
+/* ── LIKE ── */
+function toggleLike(id){
+  const p = posts.find(x => x.id === id);
+  if(!p) return;
+  p.liked = !p.liked;
+  p.likes += p.liked ? 1 : -1;
+  save();
+  renderPicks();
+  renderWall(getWallPosts());
+}
+
+/* ── SHUFFLE ── */
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  const wall = document.getElementById('photoWall');
+  wall.style.transition = 'opacity .22s';
+  wall.style.opacity = '0';
+  setTimeout(() => {
+    renderWall(getWallPosts());
+    wall.style.opacity = '1';
+  }, 230);
+});
+
+/* ── DETAIL MODAL ── */
+function openDetail(id){
+  activeId = id;
+  const p = posts.find(x => x.id === id);
+  if(!p) return;
+
+  const photo = document.getElementById('detailPhoto');
+  photo.innerHTML = p.img
+    ? `<img src="${p.img}" alt="">`
+    : `<div class="detail-photo-ph" style="background:${BGS[p.bg%BGS.length]};width:100%;height:100%;">
+        <span style="background:${avCol(p.id)};width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;">${initials(p.name)}</span>
+       </div>`;
+
+  document.getElementById('detailMeta').innerHTML = `
+    <div class="detail-avatar" style="background:${avCol(p.id)};">${initials(p.name)}</div>
+    <div class="detail-who">
+      <div class="detail-name">${p.name}</div>
+      <div class="detail-org">${p.company}${p.team?' · '+p.team:''} · ${timeAgo(p.ts)}</div>
+    </div>
+    <button class="detail-like-btn ${p.liked?'liked':''}" id="detailLikeBtn">
+      공감 ${p.likes}
+    </button>`;
+
+  document.getElementById('detailLikeBtn').addEventListener('click', () => {
+    toggleLike(p.id);
+    openDetail(p.id);
+  });
+
+  document.getElementById('detailStory').textContent = p.story;
+  renderComments(p);
+  document.getElementById('detailBackdrop').classList.add('open');
+}
+
+function renderComments(p){
+  const list = document.getElementById('commentsList');
+  if(!p.comments || p.comments.length === 0){
+    list.innerHTML = '<div style="font-size:12px;color:var(--ink-light);opacity:.5;padding:8px 0 4px;">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</div>';
+    return;
+  }
+  list.innerHTML = p.comments.map((c, i) => `
+    <div class="comment-item">
+      <div class="c-av" style="background:${AV_COLS[i%AV_COLS.length]};">${initials(c.name)}</div>
+      <div class="c-body">
+        <div class="c-header">
+          <span class="c-name">${c.name}</span>
+          <span class="c-org">${c.company}${c.team?' · '+c.team:''}</span>
+          <span class="c-time">${c.time}</span>
+        </div>
+        <div class="c-text">${c.text}</div>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('cf-submit').addEventListener('click', () => {
+  const name    = document.getElementById('cf-name').value.trim();
+  const company = document.getElementById('cf-company').value;
+  const team    = document.getElementById('cf-team').value.trim();
+  const text    = document.getElementById('cf-text').value.trim();
+  if(!name || !company || !team || !text){ alert('이름, 소속회사, 팀명, 댓글을 모두 입력해주세요.'); return; }
+  const p = posts.find(x => x.id === activeId);
+  if(!p) return;
+  p.comments.push({ name, company, team, text, time:'방금 전' });
+  save();
+  renderComments(p);
+  document.getElementById('cf-name').value = '';
+  document.getElementById('cf-company').value = '';
+  document.getElementById('cf-team').value = '';
+  document.getElementById('cf-text').value = '';
+  showToast('댓글이 달렸어요 ✦');
+});
+
+document.getElementById('detailClose').addEventListener('click', () => {
+  document.getElementById('detailBackdrop').classList.remove('open');
+});
+document.getElementById('detailBackdrop').addEventListener('click', e => {
+  if(e.target === document.getElementById('detailBackdrop'))
+    document.getElementById('detailBackdrop').classList.remove('open');
+});
+
+/* ── UPLOAD ── */
+let previewUrl = null;
+
+document.getElementById('openUpload').addEventListener('click', () => {
+  document.getElementById('uploadBackdrop').classList.add('open');
+});
+document.getElementById('fabBtn').addEventListener('click', () => {
+  document.getElementById('uploadBackdrop').classList.add('open');
+});
+document.getElementById('uploadBackdrop').addEventListener('click', e => {
+  if(e.target === document.getElementById('uploadBackdrop'))
+    document.getElementById('uploadBackdrop').classList.remove('open');
+});
+
+function handleUFile(e){
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    previewUrl = ev.target.result;
+    const zone = document.getElementById('uZone');
+    zone.classList.add('has-img');
+    zone.innerHTML = `<input type="file" id="uFile" accept="image/*"><img class="preview" src="${ev.target.result}">`;
+    document.getElementById('uFile').addEventListener('change', handleUFile);
+  };
+  r.readAsDataURL(f);
+}
+document.getElementById('uFile').addEventListener('change', handleUFile);
+
+document.getElementById('uSubmit').addEventListener('click', () => {
+  const name    = document.getElementById('u-name').value.trim();
+  const company = document.getElementById('u-company').value;
+  const team    = document.getElementById('u-team').value.trim();
+  const story   = document.getElementById('u-story').value.trim();
+  if(!name || !company || !story){ alert('이름, 소속회사, 이야기를 입력해주세요.'); return; }
+
+  posts.unshift({
+    id: nextId++, name, company, team, story,
+    likes: 0, liked: false,
+    img: previewUrl,
+    bg: Math.floor(Math.random() * BGS.length),
+    comments: [],
+    ts: Date.now()
+  });
+  save();
+
+  // reset
+  document.getElementById('uploadBackdrop').classList.remove('open');
+  previewUrl = null;
+  document.getElementById('u-name').value = '';
+  document.getElementById('u-company').value = '';
+  document.getElementById('u-team').value = '';
+  document.getElementById('u-story').value = '';
+  document.getElementById('uCount').textContent = '0';
+  const zone = document.getElementById('uZone');
+  zone.classList.remove('has-img');
+  zone.innerHTML = `<input type="file" id="uFile" accept="image/*">
+    <div id="uPlaceholder">
+      <svg style="margin:0 auto 8px;display:block;opacity:.35;" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(120,85,45,1)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <div class="u-hint">사진을 클릭하거나 끌어다 놓으세요</div>
+    </div>`;
+  document.getElementById('uFile').addEventListener('change', handleUFile);
+
+  renderPicks();
+  renderWall(getWallPosts());
+  showToast('유행이 벽에 붙었어요 ✦');
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ── INIT ── */
+renderPicks();
+renderWall(getWallPosts());
+</script>
+</body>
+</html>
