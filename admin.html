@@ -94,7 +94,7 @@ tr:hover td { background: rgba(150,105,50,.04); }
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, collection, getDocs, doc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const ADMIN_PW = 'scl2024!';
+const ADMIN_PW = 'scl2026!';
 const firebaseConfig = {
   apiKey: "AIzaSyDKRKc9oiB_Qz5ilI5M0BMew2T_MOBnUlI",
   authDomain: "scl-memories.firebaseapp.com",
@@ -157,7 +157,7 @@ function renderPostsTable(){
     <td><div class="post-story">${p.story||''}</div></td>
     <td>${p.likes||0}</td>
     <td style="font-size:11px;color:#8A7A6A;">${timeStr(p.ts)}</td>
-    <td><button class="btn-del" onclick="window._delPost('${p.id}','${(p.name||'').replace(/'/g,'\\'')}')">삭제</button></td>
+    <td><button class="btn-del" data-post-id="${p.id}" data-post-name="${(p.name||'').replace(/"/g,'&quot;')}" onclick="handleDelPost(this)">삭제</button></td>
   </tr>`).join('');
 }
 
@@ -169,18 +169,22 @@ function renderCommentsTable(){
     <td><span class="badge">${c.company||''}</span> ${c.team||''}</td>
     <td style="max-width:280px;">${c.text||''}</td>
     <td style="font-size:11px;color:#8A7A6A;">${timeStr(c.ts)}</td>
-    <td><button class="btn-del" onclick="window._delComment('${c.postId}','${c.id}')">삭제</button></td>
+    <td><button class="btn-del" data-post-id="${c.postId}" data-comment-id="${c.id}" onclick="handleDelComment(this)">삭제</button></td>
   </tr>`).join('');
 }
 
-window._delPost=async(postId,name)=>{
+window.handleDelPost = async(btn) => {
+  const postId = btn.dataset.postId;
+  const name   = btn.dataset.postName;
   if(!confirm(`"${name}"님의 게시글을 삭제할까요?\n연결된 댓글도 함께 삭제됩니다.`)) return;
-  const cs=await getDocs(collection(db,'posts',postId,'comments'));
+  const cs = await getDocs(collection(db,'posts',postId,'comments'));
   for(const d of cs.docs) await deleteDoc(doc(db,'posts',postId,'comments',d.id));
   await deleteDoc(doc(db,'posts',postId));
   showToast('게시글을 삭제했어요.'); await loadAll();
 };
-window._delComment=async(postId,commentId)=>{
+window.handleDelComment = async(btn) => {
+  const postId    = btn.dataset.postId;
+  const commentId = btn.dataset.commentId;
   if(!confirm('이 댓글을 삭제할까요?')) return;
   await deleteDoc(doc(db,'posts',postId,'comments',commentId));
   showToast('댓글을 삭제했어요.'); await loadAll();
