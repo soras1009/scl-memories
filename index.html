@@ -554,6 +554,8 @@ body { background: var(--wall); font-family: 'Noto Sans KR', sans-serif; overflo
 <div class="toast" id="toast"></div>
 
 <script>
+const API = 'https://script.google.com/macros/s/AKfycbxvpiy9CyQaZlBYXmbIb9V2fnu0gXeipLJm31JjrQbz-4uOAtTFzzpROQk-_V9LBp7M/exec';
+
 const ROTS  = [-4.5,2.8,-1.8,5.2,-3.2,1.5,-5.8,3.6,-2.4,4.1,-3.8,2.2,-1.2,4.8,-2.9,1.8];
 const TAPES = [true,false,true,true,false,true,false,true,true,false,true,false,true,false,true,true];
 const PINS  = ['#C0392B','#2471A3','#1E8449','#D4AC0D','#7D3C98','#CA6F1E'];
@@ -571,87 +573,87 @@ const BGS   = [
 ];
 const AV_COLS = ['#9E7248','#527A8A','#528A62','#9A7E38','#785290','#9A5C2E','#3A7878','#825270','#5A8248','#6A5E98'];
 
-const SAMPLE = [
-  {id:1,name:'김민준',company:'삼천리',team:'홍보팀',
-   story:'90년대엔 이 삐삐 없으면 친구들이랑 연락도 못 했어요. 숫자 입력하고 공중전화 찾아 뛰어다니던 그 시절.',
-   likes:38,liked:false,img:'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=400&h=400&fit=crop&sepia=30',bg:0,
-   comments:[
-     {name:'이수연',company:'삼천리ES',team:'영업팀',text:'저도 삐삐 있었어요! 01410 암호 아직도 기억나요 ㅋㅋ',time:'1시간 전'},
-     {name:'박지훈',company:'SL&C',team:'마케팅팀',text:'공중전화 10원짜리 챙겨다니던 거 진짜 옛날 얘기네요.',time:'40분 전'}
-   ],ts:Date.now()-7200000},
-  {id:2,name:'이서현',company:'삼천리EV',team:'기획팀',
-   story:'에어맥스 신고 등교하면 교실에서 제일 인기 많았던 시절. 이거 사려고 용돈 석 달 모았어요.',
-   likes:61,liked:true,img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',bg:1,
-   comments:[
-     {name:'최민호',company:'삼천리',team:'IT팀',text:'저도 에어맥스 갖고 싶어서 부모님께 졸랐던 기억이... ㅎㅎ',time:'4시간 전'},
-     {name:'정우진',company:'S-Power',team:'기술팀',text:'그때 운동화가 교실 권력이었죠 진짜로.',time:'3시간 전'}
-   ],ts:Date.now()-18000000},
-  {id:3,name:'박성호',company:'SL&C',team:'F&B운영팀',
-   story:'다이소 생기기 전엔 이 문구점 샤프가 전부였어요. 똑딱이 샤프 심 색깔로 취향 티 냈던 중학교 시절.',
-   likes:44,liked:false,img:'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&h=400&fit=crop',bg:2,
-   comments:[
-     {name:'한지민',company:'삼천리',team:'재무팀',text:'연두색 샤프심 쓰면 뭔가 있어 보였죠 ㅋㅋㅋ',time:'어제'}
-   ],ts:Date.now()-86400000},
-  {id:4,name:'최유나',company:'삼천리ES',team:'고객서비스팀',
-   story:'싸이월드 미니홈피 꾸미려고 도토리 사달라고 얼마나 졸랐는지. BGM 선곡이 그 사람 감성 전부였어요.',
-   likes:92,liked:false,img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=400&fit=crop',bg:3,
-   comments:[
-     {name:'이서현',company:'삼천리EV',team:'기획팀',text:'일촌평 쓰고 두근거리던 거 생각나요 😂',time:'어제'},
-     {name:'오현석',company:'삼천리',team:'총무팀',text:'BGM으로 고백하던 시대... 진짜 명작이었다.',time:'어제'}
-   ],ts:Date.now()-172800000},
-  {id:5,name:'정우진',company:'S-Power',team:'기술팀',
-   story:'카세트 워크맨 들고 버스 타던 시절이요. 테이프 늘어지면 연필로 감아 되돌리던 것도 다 추억이에요.',
-   likes:55,liked:false,img:'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=400&fit=crop',bg:4,
-   comments:[
-     {name:'김민준',company:'삼천리',team:'홍보팀',text:'연필로 감던 거 완전 공감요 ㅋㅋ 그게 당연한 줄 알았어요.',time:'2일 전'}
-   ],ts:Date.now()-259200000},
-  {id:6,name:'한지민',company:'삼천리',team:'재무팀',
-   story:'불량식품 코너에서 이 쫀드기 안 먹어본 사람 없잖아요. 교문 앞 문방구 기억하는 분 있으면 공감!',
-   likes:114,liked:true,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',bg:5,
-   comments:[
-     {name:'최유나',company:'삼천리ES',team:'고객서비스팀',text:'쫀드기에 파란 가루 찍어 먹던 거... 그게 왜 그렇게 맛있었는지 ㅋㅋ',time:'3일 전'},
-     {name:'박성호',company:'SL&C',team:'F&B운영팀',text:'50원이면 한참 먹었던 시절이죠.',time:'3일 전'},
-     {name:'이서현',company:'삼천리EV',team:'기획팀',text:'교문 앞 문방구 냄새가 아직도 기억나요.',time:'2일 전'}
-   ],ts:Date.now()-345600000},
-  {id:7,name:'오현석',company:'삼천리',team:'총무팀',
-   story:'빨간 표지 영어 단어장. 수능 직전까지 버스에서 이것만 봤어요. 귀퉁이가 다 닳았는데 아직도 버리질 못하겠어요.',
-   likes:78,liked:false,img:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=400&fit=crop',bg:6,
-   comments:[
-     {name:'한지민',company:'삼천리',team:'재무팀',text:'단어장 귀퉁이 까매지도록 들고 다닌 거 완전 공감이에요.',time:'4일 전'},
-     {name:'정우진',company:'S-Power',team:'기술팀',text:'저는 파란 표지였는데... 다들 단어장 하나씩은 있었죠.',time:'3일 전'}
-   ],ts:Date.now()-432000000},
-];
+let posts    = [];
+let activeId = null;
+let likedIds = JSON.parse(localStorage.getItem('liked_v3') || '[]');
 
-let posts   = JSON.parse(localStorage.getItem('mem_v3') || 'null') || SAMPLE;
-let nextId  = Math.max(...posts.map(p=>p.id)) + 1;
-let wallPosts = []; // currently shown on wall
-let activeId  = null;
-
-function save(){ try{ localStorage.setItem('mem_v3', JSON.stringify(posts)); }catch(e){} }
+function saveLiked(){ try{ localStorage.setItem('liked_v3', JSON.stringify(likedIds)); }catch(e){} }
+function isLiked(id){ return likedIds.includes(String(id)); }
 function initials(n){ return n || '?'; }
-function avCol(idx){ return AV_COLS[idx % AV_COLS.length]; }
+function avCol(id){ return AV_COLS[String(id).charCodeAt(0) % AV_COLS.length]; }
 
 function timeAgo(ts){
-  const d = Date.now() - ts;
-  if(d < 60000)   return '방금 전';
-  if(d < 3600000) return Math.floor(d/60000)+'분 전';
-  if(d < 86400000)return Math.floor(d/3600000)+'시간 전';
+  const d = Date.now() - Number(ts);
+  if(d < 60000)    return '방금 전';
+  if(d < 3600000)  return Math.floor(d/60000)+'분 전';
+  if(d < 86400000) return Math.floor(d/3600000)+'시간 전';
   return Math.floor(d/86400000)+'일 전';
+}
+
+/* ── API HELPERS ── */
+async function apiGet(params){
+  const qs = new URLSearchParams(params).toString();
+  const r  = await fetch(`${API}?${qs}`);
+  return r.json();
+}
+async function apiPost(body){
+  const r = await fetch(API, {
+    method:'POST',
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+/* ── LOAD POSTS ── */
+async function loadPosts(){
+  showLoading(true);
+  try {
+    const data = await apiGet({ action:'getPosts' });
+    posts = Array.isArray(data) ? data : [];
+    posts.forEach(p => {
+      p.liked    = isLiked(p.id);
+      p.comments = [];
+      p.bg       = Math.abs(String(p.id).charCodeAt(0)) % BGS.length;
+    });
+  } catch(e) {
+    console.error(e);
+    posts = [];
+  }
+  showLoading(false);
+  renderPicks();
+  renderWall(getWallPosts());
+}
+
+function showLoading(on){
+  let el = document.getElementById('loadingMsg');
+  if(on){
+    if(!el){
+      el = document.createElement('div');
+      el.id = 'loadingMsg';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(253,246,232,.95);padding:20px 32px;border-radius:12px;font-size:14px;color:var(--ink);z-index:9999;box-shadow:0 8px 32px rgba(80,40,5,.2);font-family:Noto Sans KR,sans-serif;';
+      el.textContent = '추억을 불러오는 중...';
+      document.body.appendChild(el);
+    }
+  } else {
+    if(el) el.remove();
+  }
 }
 
 /* ── TODAY'S PICKS ── */
 function renderPicks(){
   document.getElementById('picksDate').textContent = '✦ 랜덤 추천';
-
   const shuffled = [...posts].sort(() => Math.random() - .5);
-  const picks = shuffled.slice(0,3);
-
-  const rots = [-3.5, 1.8, -2.2];
-  const row  = document.getElementById('picksRow');
+  const picks = shuffled.slice(0, 3);
+  const rots  = [-3.5, 1.8, -2.2];
+  const row   = document.getElementById('picksRow');
   row.innerHTML = '';
+  if(picks.length === 0){
+    row.innerHTML = '<div style="font-size:13px;color:rgba(255,235,195,.6);font-family:Noto Sans KR,sans-serif;padding:20px 0;">아직 올라온 추억이 없어요!</div>';
+    return;
+  }
   picks.forEach((p, i) => {
     const useTape = [true,false,true][i];
-    const pinCol  = PINS[p.id % PINS.length];
+    const pinCol  = PINS[String(p.id).charCodeAt(0) % PINS.length];
     const el = document.createElement('div');
     el.className = 'pick-card';
     el.style.setProperty('--r', rots[i]+'deg');
@@ -663,24 +665,22 @@ function renderPicks(){
         : `<div class="pin-pick" style="background:radial-gradient(circle at 35% 30%,${pinCol}dd,${pinCol}77);"></div>`}
       <div class="pick-frame">
         <div class="pick-photo">
-          ${p.img
-            ? `<img src="${p.img}" alt="">`
-            : `<div class="placeholder-icon" style="background:${BGS[p.bg%BGS.length]}; width:100%; height:100%;">
-                <span style="background:${avCol(p.id)};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;">${initials(p.name)}</span>
+          ${p.imageUrl
+            ? `<img src="${p.imageUrl}" alt="" crossorigin="anonymous">`
+            : `<div class="placeholder-icon" style="background:${BGS[p.bg]}; width:100%; height:100%;">
+                <span style="background:${avCol(p.id)};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,.9);">${initials(p.name)}</span>
                </div>`}
         </div>
         <div class="pick-caption">
           <div class="pick-story">${p.story}</div>
           <div class="pick-name">${p.name} · ${p.company}</div>
           <div class="pick-footer">
-            <div class="pick-stat ${p.liked?'liked':''}" id="plk-${p.id}">
-              공감 ${p.likes}
-            </div>
+            <div class="pick-stat ${p.liked?'liked':''}" id="plk-${p.id}">공감 ${p.likes}</div>
             <div class="pick-stat" id="pcm-${p.id}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
-              ${p.comments.length}
+              댓글
             </div>
           </div>
         </div>
@@ -690,94 +690,86 @@ function renderPicks(){
       if(e.target.closest(`#pcm-${p.id}`)) return;
       openDetail(p.id);
     });
-    el.querySelector(`#plk-${p.id}`).addEventListener('click', e => {
-      e.stopPropagation(); toggleLike(p.id);
-    });
-    el.querySelector(`#pcm-${p.id}`).addEventListener('click', e => {
-      e.stopPropagation(); openDetail(p.id);
-    });
+    el.querySelector(`#plk-${p.id}`).addEventListener('click', e => { e.stopPropagation(); toggleLike(p.id); });
+    el.querySelector(`#pcm-${p.id}`).addEventListener('click', e => { e.stopPropagation(); openDetail(p.id); });
     row.appendChild(el);
   });
 }
 
 /* ── WALL ── */
 function getWallPosts(){
-  const shuffled = [...posts].sort(() => Math.random() - .5);
-  return shuffled.slice(0, Math.min(posts.length, 12));
+  return [...posts].sort(() => Math.random() - .5).slice(0, Math.min(posts.length, 12));
 }
 
 function renderWall(items){
-  wallPosts = items;
   document.getElementById('wallCountLabel').textContent = `전체 ${posts.length}개의 추억`;
   const wall = document.getElementById('photoWall');
   wall.innerHTML = '';
+  if(items.length === 0){
+    wall.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,235,195,.5);font-family:Noto Sans KR,sans-serif;font-size:13px;column-span:all;">첫 번째 유행을 꺼내보세요!</div>';
+    return;
+  }
   items.forEach((p, i) => wall.appendChild(makePolaroid(p, i)));
 }
 
 function makePolaroid(p, idx){
-  const rot = ROTS[idx % ROTS.length];
+  const rot     = ROTS[idx % ROTS.length];
   const useTape = TAPES[idx % TAPES.length];
-  const pinCol = PINS[p.id % PINS.length];
-
-  const el = document.createElement('div');
-  el.className = 'polaroid';
+  const pinCol  = PINS[String(p.id).charCodeAt(0) % PINS.length];
+  const el      = document.createElement('div');
+  el.className  = 'polaroid';
   el.dataset.id = p.id;
   el.style.setProperty('--r', rot+'deg');
-  el.style.transform = `rotate(${rot}deg)`;
+  el.style.transform      = `rotate(${rot}deg)`;
   el.style.animationDelay = (idx * .06)+'s';
-
   el.innerHTML = `
     ${useTape
       ? `<div class="tape" style="transform:translateX(-50%) rotate(${(Math.random()-.5)*4}deg);"></div>`
       : `<div class="pin" style="background:radial-gradient(circle at 35% 30%,${pinCol}dd,${pinCol}77);"></div>`}
     <div class="polaroid-frame">
       <div class="p-photo">
-        ${p.img
-          ? `<img src="${p.img}" alt="">`
-          : `<div class="placeholder-icon" style="background:${BGS[p.bg%BGS.length]};width:100%;height:100%;">
-              <span style="background:${avCol(p.id)};width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;">${initials(p.name)}</span>
+        ${p.imageUrl
+          ? `<img src="${p.imageUrl}" alt="" crossorigin="anonymous">`
+          : `<div class="placeholder-icon" style="background:${BGS[p.bg]};width:100%;height:100%;">
+              <span style="background:${avCol(p.id)};width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.9);">${initials(p.name)}</span>
              </div>`}
       </div>
       <div class="p-caption">
         <div class="p-story">${p.story}</div>
         <div class="p-name">${p.name} · ${p.company}${p.team?' · '+p.team:''}</div>
         <div class="p-footer">
-          <div class="p-stat ${p.liked?'liked':''}" id="like-${p.id}">
-            공감 ${p.likes}
-          </div>
+          <div class="p-stat ${p.liked?'liked':''}" id="like-${p.id}">공감 ${p.likes}</div>
           <div class="p-stat" id="cmt-${p.id}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-            ${p.comments.length}
+            댓글
           </div>
         </div>
       </div>
     </div>`;
-
   el.addEventListener('click', e => {
     if(e.target.closest(`#like-${p.id}`)) return;
     if(e.target.closest(`#cmt-${p.id}`)) return;
     openDetail(p.id);
   });
-  el.querySelector(`#like-${p.id}`).addEventListener('click', e => {
-    e.stopPropagation(); toggleLike(p.id);
-  });
-  el.querySelector(`#cmt-${p.id}`).addEventListener('click', e => {
-    e.stopPropagation(); openDetail(p.id);
-  });
+  el.querySelector(`#like-${p.id}`).addEventListener('click', e => { e.stopPropagation(); toggleLike(p.id); });
+  el.querySelector(`#cmt-${p.id}`).addEventListener('click', e => { e.stopPropagation(); openDetail(p.id); });
   return el;
 }
 
 /* ── LIKE ── */
-function toggleLike(id){
-  const p = posts.find(x => x.id === id);
+async function toggleLike(id){
+  const p = posts.find(x => String(x.id) === String(id));
   if(!p) return;
   p.liked = !p.liked;
-  p.likes += p.liked ? 1 : -1;
-  save();
+  p.likes = Math.max(0, Number(p.likes) + (p.liked ? 1 : -1));
+  if(p.liked) likedIds.push(String(id));
+  else likedIds = likedIds.filter(x => x !== String(id));
+  saveLiked();
   renderPicks();
   renderWall(getWallPosts());
+  try { await apiPost({ action:'toggleLike', postId: id, liked: p.liked }); } catch(e){}
 }
 
 /* ── SHUFFLE ── */
@@ -792,16 +784,15 @@ document.getElementById('shuffleBtn').addEventListener('click', () => {
 });
 
 /* ── DETAIL MODAL ── */
-function openDetail(id){
+async function openDetail(id){
   activeId = id;
-  const p = posts.find(x => x.id === id);
+  const p  = posts.find(x => String(x.id) === String(id));
   if(!p) return;
 
-  const photo = document.getElementById('detailPhoto');
-  photo.innerHTML = p.img
-    ? `<img src="${p.img}" alt="">`
-    : `<div class="detail-photo-ph" style="background:${BGS[p.bg%BGS.length]};width:100%;height:100%;">
-        <span style="background:${avCol(p.id)};width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;">${initials(p.name)}</span>
+  document.getElementById('detailPhoto').innerHTML = p.imageUrl
+    ? `<img src="${p.imageUrl}" alt="" crossorigin="anonymous">`
+    : `<div class="detail-photo-ph" style="background:${BGS[p.bg]};width:100%;height:100%;">
+        <span style="background:${avCol(p.id)};width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:rgba(255,255,255,.9);">${initials(p.name)}</span>
        </div>`;
 
   document.getElementById('detailMeta').innerHTML = `
@@ -820,8 +811,19 @@ function openDetail(id){
   });
 
   document.getElementById('detailStory').textContent = p.story;
-  renderComments(p);
+
+  // 댓글 로드
+  document.getElementById('commentsList').innerHTML = '<div style="font-size:12px;color:var(--ink-light);padding:8px 0;">댓글 불러오는 중...</div>';
   document.getElementById('detailBackdrop').classList.add('open');
+
+  try {
+    const comments = await apiGet({ action:'getComments', postId: id });
+    p.comments = Array.isArray(comments) ? comments : [];
+    renderComments(p);
+  } catch(e) {
+    p.comments = [];
+    renderComments(p);
+  }
 }
 
 function renderComments(p){
@@ -837,29 +839,38 @@ function renderComments(p){
         <div class="c-header">
           <span class="c-name">${c.name}</span>
           <span class="c-org">${c.company}${c.team?' · '+c.team:''}</span>
-          <span class="c-time">${c.time}</span>
+          <span class="c-time">${timeAgo(c.ts)}</span>
         </div>
         <div class="c-text">${c.text}</div>
       </div>
     </div>`).join('');
 }
 
-document.getElementById('cf-submit').addEventListener('click', () => {
+document.getElementById('cf-submit').addEventListener('click', async () => {
   const name    = document.getElementById('cf-name').value.trim();
-  const company = document.getElementById('cf-company').value;
+  const company = document.getElementById('cf-company').value.trim();
   const team    = document.getElementById('cf-team').value.trim();
   const text    = document.getElementById('cf-text').value.trim();
   if(!name || !company || !team || !text){ alert('이름, 소속회사, 팀명, 댓글을 모두 입력해주세요.'); return; }
-  const p = posts.find(x => x.id === activeId);
-  if(!p) return;
-  p.comments.push({ name, company, team, text, time:'방금 전' });
-  save();
-  renderComments(p);
-  document.getElementById('cf-name').value = '';
-  document.getElementById('cf-company').value = '';
-  document.getElementById('cf-team').value = '';
-  document.getElementById('cf-text').value = '';
-  showToast('댓글이 달렸어요 ✦');
+
+  const btn = document.getElementById('cf-submit');
+  btn.textContent = '저장 중...'; btn.disabled = true;
+
+  try {
+    await apiPost({ action:'addComment', postId: activeId, name, company, team, text });
+    document.getElementById('cf-name').value    = '';
+    document.getElementById('cf-company').value = '';
+    document.getElementById('cf-team').value    = '';
+    document.getElementById('cf-text').value    = '';
+    // 댓글 새로고침
+    const comments = await apiGet({ action:'getComments', postId: activeId });
+    const p = posts.find(x => String(x.id) === String(activeId));
+    if(p){ p.comments = Array.isArray(comments) ? comments : []; renderComments(p); }
+    showToast('댓글이 달렸어요 ✦');
+  } catch(e) {
+    alert('댓글 저장 중 오류가 발생했어요. 다시 시도해주세요.');
+  }
+  btn.textContent = '댓글 달기'; btn.disabled = false;
 });
 
 document.getElementById('detailClose').addEventListener('click', () => {
@@ -871,7 +882,8 @@ document.getElementById('detailBackdrop').addEventListener('click', e => {
 });
 
 /* ── UPLOAD ── */
-let previewUrl = null;
+let previewUrl  = null;
+let previewMime = 'image/jpeg';
 
 document.getElementById('openUpload').addEventListener('click', () => {
   document.getElementById('uploadBackdrop').classList.add('open');
@@ -886,6 +898,7 @@ document.getElementById('uploadBackdrop').addEventListener('click', e => {
 
 function handleUFile(e){
   const f = e.target.files[0]; if(!f) return;
+  previewMime = f.type || 'image/jpeg';
   const r = new FileReader();
   r.onload = ev => {
     previewUrl = ev.target.result;
@@ -898,43 +911,48 @@ function handleUFile(e){
 }
 document.getElementById('uFile').addEventListener('change', handleUFile);
 
-document.getElementById('uSubmit').addEventListener('click', () => {
+document.getElementById('uSubmit').addEventListener('click', async () => {
   const name    = document.getElementById('u-name').value.trim();
-  const company = document.getElementById('u-company').value;
+  const company = document.getElementById('u-company').value.trim();
   const team    = document.getElementById('u-team').value.trim();
   const story   = document.getElementById('u-story').value.trim();
-  if(!name || !company || !story){ alert('이름, 소속회사, 이야기를 입력해주세요.'); return; }
+  if(!name || !company || !team || !story){ alert('이름, 소속회사, 팀명, 이야기를 모두 입력해주세요.'); return; }
 
-  posts.unshift({
-    id: nextId++, name, company, team, story,
-    likes: 0, liked: false,
-    img: previewUrl,
-    bg: Math.floor(Math.random() * BGS.length),
-    comments: [],
-    ts: Date.now()
-  });
-  save();
+  const btn = document.getElementById('uSubmit');
+  btn.textContent = '올리는 중...'; btn.disabled = true;
 
-  // reset
-  document.getElementById('uploadBackdrop').classList.remove('open');
-  previewUrl = null;
-  document.getElementById('u-name').value = '';
-  document.getElementById('u-company').value = '';
-  document.getElementById('u-team').value = '';
-  document.getElementById('u-story').value = '';
-  document.getElementById('uCount').textContent = '0';
-  const zone = document.getElementById('uZone');
-  zone.classList.remove('has-img');
-  zone.innerHTML = `<input type="file" id="uFile" accept="image/*">
-    <div id="uPlaceholder">
-      <svg style="margin:0 auto 8px;display:block;opacity:.35;" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(120,85,45,1)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-      <div class="u-hint">사진을 클릭하거나 끌어다 놓으세요</div>
-    </div>`;
-  document.getElementById('uFile').addEventListener('change', handleUFile);
+  try {
+    await apiPost({
+      action:      'addPost',
+      name, company, team, story,
+      imageBase64: previewUrl  || '',
+      imageMime:   previewMime
+    });
 
-  renderPicks();
-  renderWall(getWallPosts());
-  showToast('유행이 벽에 붙었어요 ✦');
+    // 초기화
+    document.getElementById('uploadBackdrop').classList.remove('open');
+    previewUrl  = null;
+    previewMime = 'image/jpeg';
+    document.getElementById('u-name').value    = '';
+    document.getElementById('u-company').value = '';
+    document.getElementById('u-team').value    = '';
+    document.getElementById('u-story').value   = '';
+    document.getElementById('uCount').textContent = '0';
+    const zone = document.getElementById('uZone');
+    zone.classList.remove('has-img');
+    zone.innerHTML = `<input type="file" id="uFile" accept="image/*">
+      <div id="uPlaceholder">
+        <svg style="margin:0 auto 8px;display:block;opacity:.35;" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(120,85,45,1)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <div class="u-hint">사진을 클릭하거나 끌어다 놓으세요</div>
+      </div>`;
+    document.getElementById('uFile').addEventListener('change', handleUFile);
+
+    showToast('유행이 벽에 붙었어요 ✦');
+    await loadPosts(); // 전체 새로고침
+  } catch(e) {
+    alert('저장 중 오류가 발생했어요. 다시 시도해주세요.');
+  }
+  btn.textContent = '벽에 붙이기'; btn.disabled = false;
 });
 
 function showToast(msg){
@@ -945,8 +963,8 @@ function showToast(msg){
 }
 
 /* ── INIT ── */
-renderPicks();
-renderWall(getWallPosts());
+loadPosts();
+
 </script>
 </body>
 </html>
