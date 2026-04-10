@@ -364,8 +364,18 @@ function showLoading(on){
 function initRealtime(){
   showLoading(true);
   const q = query(collection(db, 'posts'), orderBy('ts', 'desc'));
-  onSnapshot(q, snap => {
-    posts = snap.docs.map(d => ({ id: d.id, ...d.data(), liked: isLiked(d.id), bg: Math.abs(String(d.id).charCodeAt(0)) % BGS.length }));
+  onSnapshot(q, async snap => {
+    // 댓글 수도 함께 가져오기
+    const postsWithComments = await Promise.all(snap.docs.map(async d => {
+      const cSnap = await getDocs(collection(db, 'posts', d.id, 'comments'));
+      return {
+        id: d.id, ...d.data(),
+        liked: isLiked(d.id),
+        bg: Math.abs(String(d.id).charCodeAt(0)) % BGS.length,
+        commentCount: cSnap.size
+      };
+    }));
+    posts = postsWithComments;
     showLoading(false);
     renderPicks();
     renderWall(getWallPosts());
@@ -405,7 +415,7 @@ function renderPicks(){
             <div class="pick-stat ${p.liked?'liked':''}" id="plk-${p.id}">공감 ${p.likes||0}</div>
             <div class="pick-stat" id="pcm-${p.id}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              댓글
+              ${p.commentCount||0}
             </div>
           </div>
         </div>
@@ -448,7 +458,7 @@ function makePolaroid(p,idx){
           <div class="p-stat ${p.liked?'liked':''}" id="like-${p.id}">공감 ${p.likes||0}</div>
           <div class="p-stat" id="cmt-${p.id}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            댓글
+            ${p.commentCount||0}
           </div>
         </div>
       </div>
