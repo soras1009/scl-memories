@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 · 그땐 그게 유행이었지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #F5F0E8; font-family: 'Noto Sans KR', sans-serif; color: #3A2E24; min-height: 100vh; }
+
+/* LOGIN */
+.login-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.login-box {
+  background: #FDFAF5; border-radius: 14px; padding: 36px 32px;
+  width: 100%; max-width: 360px;
+  box-shadow: 0 8px 32px rgba(80,40,5,.14);
+  border: 1px solid rgba(150,105,50,.18);
+}
+.login-title { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+.login-sub { font-size: 12px; color: #8A7A6A; margin-bottom: 24px; }
+.login-input {
+  width: 100%; padding: 10px 14px; font-size: 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  border: 1px solid rgba(150,105,50,.35); border-radius: 8px;
+  background: #FDF6E8; color: #3A2E24; outline: none; margin-bottom: 12px;
+}
+.login-input:focus { border-color: rgba(150,100,40,.6); }
+.login-btn {
+  width: 100%; padding: 11px; background: #3A2E24; color: #FDF6E8;
+  font-family: 'Noto Sans KR', sans-serif; font-size: 14px;
+  border: none; border-radius: 8px; cursor: pointer; transition: background .2s;
+}
+.login-btn:hover { background: #5A4030; }
+.login-err { font-size: 12px; color: #B84040; margin-top: 8px; display: none; }
+
+/* ADMIN */
+.admin-wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+.admin-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; padding-bottom: 18px;
+  border-bottom: 1px solid rgba(150,105,50,.2);
+}
+.admin-title { font-size: 18px; font-weight: 500; }
+.admin-sub { font-size: 12px; color: #8A7A6A; margin-top: 3px; }
+.logout-btn {
+  padding: 7px 16px; background: transparent;
+  border: 1px solid rgba(150,105,50,.3); border-radius: 20px;
+  font-size: 12px; color: #8A7A6A; cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif; transition: all .2s;
+}
+.logout-btn:hover { border-color: #B84040; color: #B84040; }
+
+/* STATS */
+.stats-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+.stat-card {
+  flex: 1; min-width: 120px;
+  background: #FDFAF5; border-radius: 10px; padding: 16px 18px;
+  border: 1px solid rgba(150,105,50,.15);
+}
+.stat-label { font-size: 11px; color: #8A7A6A; letter-spacing: .06em; margin-bottom: 6px; }
+.stat-num { font-size: 26px; font-weight: 500; color: #3A2E24; }
+
+/* TABLE */
+.section-label {
+  font-size: 13px; font-weight: 500; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.refresh-btn {
+  font-size: 11px; color: #8A7A6A; background: none; border: none; cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif; padding: 4px 8px;
+  border: 1px solid rgba(150,105,50,.2); border-radius: 6px;
+}
+.refresh-btn:hover { color: #C17B3F; border-color: rgba(193,123,63,.3); }
+
+.table-wrap { overflow-x: auto; margin-bottom: 36px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: rgba(150,105,50,.08); }
+th { padding: 10px 12px; text-align: left; font-weight: 500; font-size: 11px; letter-spacing: .06em; color: #8A7A6A; border-bottom: 1px solid rgba(150,105,50,.15); white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid rgba(150,105,50,.08); vertical-align: middle; }
+tr:hover td { background: rgba(150,105,50,.04); }
+
+.post-story { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.post-img { width: 44px; height: 44px; object-fit: cover; border-radius: 4px; }
+.no-img { width: 44px; height: 44px; border-radius: 4px; background: #E8DDD0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #8A7A6A; }
+
+.btn-del {
+  padding: 4px 10px; background: transparent;
+  border: 1px solid rgba(184,64,64,.35); border-radius: 6px;
+  font-size: 11px; color: #B84040; cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif; transition: all .15s;
+  white-space: nowrap;
+}
+.btn-del:hover { background: rgba(184,64,64,.08); }
+
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 12px;
+  font-size: 10px; background: rgba(150,105,50,.12); color: #8A7A6A;
+}
+
+.loading-row td { text-align: center; color: #8A7A6A; padding: 24px; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  background: #3A2E24; color: #FDF6E8;
+  padding: 9px 20px; border-radius: 24px;
+  font-size: 13px; opacity: 0; transition: all .3s;
+  z-index: 999; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-title">관리자 페이지</div>
+    <div class="login-sub">그땐 그게 유행이었지 · 삼천리그룹</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호" />
+    <button class="login-btn" id="loginBtn">로그인</button>
+    <div class="login-err" id="loginErr">비밀번호가 맞지 않아요.</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap" style="display:none;">
+  <div class="admin-header">
+    <div>
+      <div class="admin-title">관리자 대시보드</div>
+      <div class="admin-sub">그땐 그게 유행이었지 · 삼천리그룹</div>
+    </div>
+    <button class="logout-btn" id="logoutBtn">로그아웃</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-label">전체 게시글</div><div class="stat-num" id="statPosts">-</div></div>
+    <div class="stat-card"><div class="stat-label">전체 댓글</div><div class="stat-num" id="statComments">-</div></div>
+    <div class="stat-card"><div class="stat-label">전체 공감</div><div class="stat-num" id="statLikes">-</div></div>
+    <div class="stat-card"><div class="stat-label">참여 인원</div><div class="stat-num" id="statPeople">-</div></div>
+  </div>
+
+  <!-- POSTS TABLE -->
+  <div class="section-label">
+    게시글 관리
+    <button class="refresh-btn" id="refreshBtn">↻ 새로고침</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>사진</th>
+          <th>이름</th>
+          <th>소속</th>
+          <th>이야기</th>
+          <th>공감</th>
+          <th>댓글</th>
+          <th>등록일</th>
+          <th>관리</th>
+        </tr>
+      </thead>
+      <tbody id="postsTable">
+        <tr class="loading-row"><td colspan="8">불러오는 중...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- COMMENTS TABLE -->
+  <div class="section-label">댓글 관리</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>소속</th>
+          <th>댓글 내용</th>
+          <th>게시글 ID</th>
+          <th>등록일</th>
+          <th>관리</th>
+        </tr>
+      </thead>
+      <tbody id="commentsTable">
+        <tr class="loading-row"><td colspan="6">불러오는 중...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxvpiy9CyQaZlBYXmbIb9V2fnu0gXeipLJm31JjrQbz-4uOAtTFzzpROQk-_V9LBp7M/exec';
+
+let allPosts    = [];
+let allComments = [];
+
+async function apiGet(params){
+  const qs = new URLSearchParams(params).toString();
+  const r  = await fetch(`${API}?${qs}`);
+  return r.json();
+}
+async function apiPost(body){
+  const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
+  return r.json();
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function timeStr(ts){
+  if(!ts) return '-';
+  const d = new Date(Number(ts));
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+/* ── LOGIN ── */
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const pw  = document.getElementById('pwInput').value;
+  const btn = document.getElementById('loginBtn');
+  btn.textContent = '확인 중...'; btn.disabled = true;
+  const res = await apiGet({ action:'adminCheck', pw });
+  if(res.success){
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('adminWrap').style.display = '';
+    loadAll();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+  btn.textContent = '로그인'; btn.disabled = false;
+});
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('pwInput').value = '';
+});
+
+document.getElementById('refreshBtn').addEventListener('click', () => loadAll());
+
+/* ── LOAD ALL ── */
+async function loadAll(){
+  document.getElementById('postsTable').innerHTML    = '<tr class="loading-row"><td colspan="8">불러오는 중...</td></tr>';
+  document.getElementById('commentsTable').innerHTML = '<tr class="loading-row"><td colspan="6">불러오는 중...</td></tr>';
+
+  const [posts] = await Promise.all([apiGet({ action:'getPosts' })]);
+  allPosts = Array.isArray(posts) ? posts : [];
+
+  // 댓글은 게시글별로 모아오기
+  allComments = [];
+  await Promise.all(allPosts.map(async p => {
+    const cmts = await apiGet({ action:'getComments', postId: p.id });
+    if(Array.isArray(cmts)) allComments.push(...cmts);
+  }));
+
+  renderStats();
+  renderPostsTable();
+  renderCommentsTable();
+}
+
+/* ── STATS ── */
+function renderStats(){
+  const people = new Set(allPosts.map(p => p.name + p.team)).size;
+  const likes  = allPosts.reduce((s, p) => s + Number(p.likes||0), 0);
+  document.getElementById('statPosts').textContent    = allPosts.length;
+  document.getElementById('statComments').textContent = allComments.length;
+  document.getElementById('statLikes').textContent    = likes;
+  document.getElementById('statPeople').textContent   = people;
+}
+
+/* ── POSTS TABLE ── */
+function renderPostsTable(){
+  const tbody = document.getElementById('postsTable');
+  if(allPosts.length === 0){
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="8">게시글이 없어요.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allPosts.map(p => {
+    const cmtCount = allComments.filter(c => String(c.postId) === String(p.id)).length;
+    const imgHtml  = p.imageUrl
+      ? `<img class="post-img" src="${p.imageUrl}" crossorigin="anonymous">`
+      : `<div class="no-img">없음</div>`;
+    return `<tr>
+      <td>${imgHtml}</td>
+      <td>${p.name}</td>
+      <td><span class="badge">${p.company}</span><br><span style="font-size:11px;color:#8A7A6A;">${p.team||''}</span></td>
+      <td><div class="post-story">${p.story}</div></td>
+      <td>${p.likes||0}</td>
+      <td>${cmtCount}</td>
+      <td style="font-size:11px;color:#8A7A6A;">${timeStr(p.ts)}</td>
+      <td><button class="btn-del" onclick="deletePost('${p.id}','${p.name}')">삭제</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── COMMENTS TABLE ── */
+function renderCommentsTable(){
+  const tbody = document.getElementById('commentsTable');
+  if(allComments.length === 0){
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="6">댓글이 없어요.</td></tr>';
+    return;
+  }
+  // 최신순
+  const sorted = [...allComments].sort((a,b) => Number(b.ts) - Number(a.ts));
+  tbody.innerHTML = sorted.map(c => `<tr>
+    <td>${c.name}</td>
+    <td><span class="badge">${c.company}</span> ${c.team||''}</td>
+    <td style="max-width:280px;">${c.text}</td>
+    <td style="font-size:11px;color:#8A7A6A;">${String(c.postId).slice(0,8)}...</td>
+    <td style="font-size:11px;color:#8A7A6A;">${timeStr(c.ts)}</td>
+    <td><button class="btn-del" onclick="deleteComment('${c.id}')">삭제</button></td>
+  </tr>`).join('');
+}
+
+/* ── DELETE POST ── */
+async function deletePost(postId, name){
+  if(!confirm(`"${name}"님의 게시글을 삭제할까요?\n연결된 댓글도 함께 삭제됩니다.`)) return;
+  const res = await apiPost({ action:'deletePost', postId, isAdmin: true });
+  if(res.success){
+    showToast('게시글을 삭제했어요.');
+    await loadAll();
+  } else {
+    alert(res.error || '삭제 중 오류가 발생했어요.');
+  }
+}
+
+/* ── DELETE COMMENT ── */
+async function deleteComment(commentId){
+  if(!confirm('이 댓글을 삭제할까요?')) return;
+  const res = await apiPost({ action:'deleteComment', commentId, isAdmin: true });
+  if(res.success){
+    showToast('댓글을 삭제했어요.');
+    await loadAll();
+  } else {
+    alert(res.error || '삭제 중 오류가 발생했어요.');
+  }
+}
+</script>
+</body>
+</html>
