@@ -431,7 +431,7 @@ function renderPicks(){
 }
 
 /* ── WALL ── */
-function getWallPosts(){ return [...posts].sort(()=>Math.random()-.5).slice(0, Math.min(posts.length,12)); }
+function getWallPosts(){ return [...posts].sort(()=>Math.random()-.5); }
 
 function renderWall(items){
   const wall = document.getElementById('photoWall');
